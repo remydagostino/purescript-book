@@ -1,5 +1,7 @@
 module Data.AddressBook where
 
+import Data.Maybe
+
 newtype Address = Address 
   { street :: String
   , city   :: String 
@@ -33,11 +35,11 @@ phoneNumber ty number = PhoneNumber
 newtype Person = Person
   { firstName :: String
   , lastName  :: String
-  , address   :: Address
+  , address   :: Maybe Address
   , phones    :: [PhoneNumber]
   }
 
-person :: String -> String -> Address -> [PhoneNumber] -> Person
+person :: String -> String -> Maybe Address -> [PhoneNumber] -> Person
 person firstName lastName address phones = Person
   { firstName: firstName
   , lastName:  lastName
@@ -48,10 +50,16 @@ person firstName lastName address phones = Person
 examplePerson :: Person
 examplePerson = 
   person "John" "Smith" 
-         (address "123 Fake St." "FakeTown" "CA") 
-	 [ phoneNumber HomePhone "555-555-5555"
+         (Just (address "123 Fake St." "FakeTown" "CA"))
+         [ phoneNumber HomePhone "555-555-5555"
          , phoneNumber CellPhone "555-555-0000"
-	 ]
+         ]
+
+homelessPerson :: Person
+homelessPerson = 
+  person "Homeless" "Guy"
+         Nothing
+         [ phoneNumber HomePhone "444-444-4444" ]
 
 instance showAddress :: Show Address where
   show (Address o) = "Address " ++
